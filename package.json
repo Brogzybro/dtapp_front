@@ -1,0 +1,22 @@
+{
+  "name": "dtapp_flutter",
+  "version": "1.0.0",
+  "description": "A new Flutter project.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "genapibase": "openapi-generator generate -i swagger.json -g dart -o dartapi/test",
+    "genapi": "npm run genapibase && node scr_replaceDartApiIP.js dartapi/test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^1.0.7-4.2.1",
+    "dotenv": "^8.2.0"
+  }
+}
