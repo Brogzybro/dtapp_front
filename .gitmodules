@@ -1,0 +1,3 @@
+[submodule "dtapp_shared"]
+	path = dtapp_shared
+	url = https://github.com/evnto/dtapp_shared.git
