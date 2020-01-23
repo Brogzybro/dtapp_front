@@ -59,7 +59,18 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = _init_counter;
   String _myText = _myTexts[_init_counter];
 
-  void _incrementCounter() {
+  void _incrementCounter() async{
+
+    var user = new User();
+    user.username = "darttestuser2";
+    user.password = "darttestuserpass213";
+    try{
+      var postReq = await api_instance.userPost(user);
+      print("User created");
+    }catch(e){
+      print(e);
+    }
+
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -69,10 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
       _myText = _myTexts[_counter % _myTexts.length];
 
-      var user = new User();
-      user.username = "darttestuser";
-      user.password = "darttestuserpass213";
-      api_instance.userPost(user);
     });
   }
 
@@ -120,6 +127,38 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_myText',
               style: Theme.of(context).textTheme.display1,
+            ),
+            Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      hintText: 'Enter your email',
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: RaisedButton(
+                      onPressed: () {
+                        // Validate will return true if the form is valid, or false if
+                        // the form is invalid.
+                        //if (_formKey.currentState.validate()) {
+                          // Process data.
+                        //}
+                        print("yo");
+                      },
+                      child: Text('Submit'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

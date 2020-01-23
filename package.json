@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "genapibase": "openapi-generator generate -i swagger.json -g dart -o dartapi/test",
+    "genapibase": "openapi-generator generate -i dtapp_shared/swagger.json -g dart -o dartapi/test",
     "genapi": "npm run genapibase && node scr_replaceDartApiIP.js dartapi/test"
   },
   "keywords": [],
