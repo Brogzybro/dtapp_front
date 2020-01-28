@@ -3,7 +3,8 @@ import 'package:openapi/api.dart';
 
 import 'login_page.dart';
 
-var api_instance = UserApi();
+var userapi_instance = UserApi();
+var fitbitapi_instance = FitbitApi();
 
 class SignupPage extends StatefulWidget {
   SignupPage({Key key, this.title}) : super(key: key);
@@ -15,30 +16,11 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  static const _init_counter = 0;
-  static const _myTexts = [
-    "Hi press me", 
-    "Yo wtf why you press me. And more text just to test asd", 
-    "Stop",
-    "Stop pressing", 
-    "Stop pressing me", 
-    "Wtf dude"
-  ];
-  int _counter = _init_counter;
-  String _myText = _myTexts[_init_counter];
+  final _formKey = GlobalKey<FormState>();
+  Model _model = new Model();
 
-  void _signupAction() async{
-    print("yo");
-    setState(() {
-        // This call to setState tells the Flutter framework that something has
-        // changed in this State, which causes it to rerun the build method below
-        // so that the display can reflect the updated values. If we changed
-        // _counter without calling setState(), then the build method would not be
-        // called again, and so nothing would appear to happen.
-        _counter++;
-        _myText = _myTexts[_counter % _myTexts.length];
-
-    });
+  void _actionButtonAction(){
+    print("Useless aciton button pressed");
   }
 
   @override
@@ -48,82 +30,117 @@ class _SignupPageState extends State<SignupPage> {
       appBar: AppBar(
         title: Text("Sign up to Digital Twin")
       ),
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Form(
-                child: Column(
-                  children: <Widget>[
-                      Text(
-                        "Sign up",
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold
+      body: Builder(
+        builder: (BuildContext context) {
+          return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                          Text(
+                            "Sign up",
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold
+                              ),
                           ),
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Enter your username',
-                        ),
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Enter your password',
-                        ),
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                        obscureText: true,
-                      ),
-                      RaisedButton(
-                        onPressed: () {
-                          // Validate will return true if the form is valid, or false if
-                          // the form is invalid.
-                          //if (_formKey.currentState.validate()) {
-                            // Process data.
-                          //}'
-                          print("yo");
-                        },
-                        child: Text('Sign up')
-                      ),
-                      RaisedButton(
-                        onPressed: () {
-                          // Validate will return true if the form is valid, or false if
-                          // the form is invalid.
-                          //if (_formKey.currentState.validate()) {
-                            // Process data.
-                          //}'
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => LoginPage(title: "test")),
-                          );
-                          print("yo");
-                        },
-                        child: Text('Log in'),
-                        color: Colors.orangeAccent
-                      ),
-                  ],
-                ),
-              ),
-            )
-          ]
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              hintText: 'Enter your username',
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            onSaved: (val) => _model.username = val,
+                          ),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              hintText: 'Enter your password',
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            onSaved: (val) => _model.password = val,
+                            obscureText: true,
+                          ),
+                          RaisedButton(
+                            onPressed: () {
+                              // Validate will return true if the form is valid, or false if
+                              // the form is invalid.
+                              if (_formKey.currentState.validate()) {
+                                // Process data.
+                                _formKey.currentState.save();
+                                attemptSignup(_model).then((success){
+                                  var text = (success) ? 
+                                    "User created!" : "User creation failed. Username probably taken.";
+                                  print(text);
+                                  Scaffold.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(text)
+                                    )
+                                  );
+
+                                });
+                              }
+                              print("yo");
+                            },
+                            child: Text('Sign up')
+                          ),
+                          RaisedButton(
+                            onPressed: () {
+                              // Validate will return true if the form is valid, or false if
+                              // the form is invalid.
+                              //if (_formKey.currentState.validate()) {
+                                // Process data.
+                              //}'
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => LoginPage(title: "test")),
+                              );
+                              print("yo");
+                            },
+                            child: Text('Go to log in'),
+                            color: Colors.orangeAccent
+                          ),
+                      ],
+                    ),
+                  ),
+                )
+              ]
+            );
+          }
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _signupAction,
+          onPressed: _actionButtonAction,
           tooltip: 'Yo',
           child: Icon(Icons.add)
         ),
     );
+  }
+}
+
+Future<bool> attemptSignup(Model model) async{
+  print("Signing up...");
+  var user = new User();
+  user.username = model.username;
+  user.password = model.password;
+  try{
+    var postReq = await userapi_instance.userPost(user);
+    print("User created");
+    print(postReq);
+    return true;
+  } catch(e){
+    print(e);
+    return false;
   }
 }

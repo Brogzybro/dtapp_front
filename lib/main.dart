@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:openapi/api.dart';
 
 import 'login_page.dart';
 
+User loggedInUser;
 
 void main() => runApp(MyApp());
 
