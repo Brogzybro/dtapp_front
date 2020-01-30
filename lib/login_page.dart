@@ -102,15 +102,21 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         RaisedButton(
                           onPressed: () {
-                            // Validate will return true if the form is valid, or false if
-                            // the form is invalid.
+
+                            Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Attempting log in..."),
+                                duration: Duration(minutes: 5)
+                              )
+                            );
+                            
                             if (_formKey.currentState.validate()) {
-                              // Process data.
                               _formKey.currentState.save();
                               attemptLogin(_model).then((success){
                                 var text = (success) ? 
                                   "Logged in successfully!" : "Login failed. Check username/password.";
                                 print(text);
+                                Scaffold.of(context).hideCurrentSnackBar();
                                 Scaffold.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(text)

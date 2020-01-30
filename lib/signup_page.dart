@@ -75,15 +75,20 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           RaisedButton(
                             onPressed: () {
-                              // Validate will return true if the form is valid, or false if
-                              // the form is invalid.
+                              Scaffold.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Attempting sign up..."),
+                                  duration: Duration(minutes: 5)
+                                )
+                              );
+
                               if (_formKey.currentState.validate()) {
-                                // Process data.
                                 _formKey.currentState.save();
                                 attemptSignup(_model).then((success){
                                   var text = (success) ? 
                                     "User created!" : "User creation failed. Username probably taken.";
                                   print(text);
+                                  Scaffold.of(context).hideCurrentSnackBar();
                                   Scaffold.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(text)

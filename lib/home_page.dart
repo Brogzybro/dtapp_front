@@ -5,6 +5,9 @@ import 'package:openapi/api.dart';
 
 import 'signup_page.dart';
 
+var sampleapi_instance = SamplesApi();
+final List<String> entries = <String>['A', 'B', 'C'];
+
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
 
@@ -15,12 +18,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Choice _selectedChoice = choices[0]; // The app's "state".
-
   void _select(Choice choice) {
-    // Causes the app to rebuild with the new _selectedChoice.
     setState(() {
-      _selectedChoice = choice;
       switch (choice.action) {
         case 'logout':
           print("yo logging out");
@@ -38,13 +37,36 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _actionButtonAction(){
+  void _actionButtonAction() async{
     print("Useless aciton button pressed");
+    print("Trying to get samples...");
+    try{
+      var samples = await sampleapi_instance.samplesGet(limit: 10);
+      print("Samples retrieved " + samples.length.toString());
+      samples.take(10).forEach((sample){
+        print(DateTime.fromMillisecondsSinceEpoch(sample.startDate));
+      });
+      //print(samples);
+    }catch(e){
+      print("samples error");
+      print(e);
+    }
   }
 
+  Future<List<Sample>> _fetchSamples() async {
+    try{
+      var samples = await sampleapi_instance.samplesGet(limit: 20, type: Type.sleep_);
+      print("Samples retrieved " + samples.length.toString());
+      return samples;
+    }catch(e){
+      print("samples error");
+      print(e);
+      return null;
+    }
+  }
+ // TODO do filtering stuff
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text("Home Page"),
@@ -62,22 +84,58 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: Builder(
-        builder: (BuildContext context) {
-          return Column(
+      body: FutureBuilder(
+        future: _fetchSamples(),
+        builder: (BuildContext context, snapshot) {
+          if(snapshot.hasData){
+            return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Yo"),
-                Text(_selectedChoice.title)
+                Expanded(
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext ibContext, int index) {
+                      return Container(
+                        height: 50,
+                        color: Colors.amber[200 + 100 * (index % 2)],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Text('${snapshot.data[index].type} : ${snapshot.data[index].value}'),
+                                Text("Collected from: ${snapshot.data[index].source_}")
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Text("Start date: ${DateTime.fromMillisecondsSinceEpoch(snapshot.data[index].startDate)}"), 
+                                Text("End date: ${DateTime.fromMillisecondsSinceEpoch(snapshot.data[index].endDate)}")
+                              ],
+                            )
+                          ]
+                        )
+                      );
+                    }
+                  )
+                )
               ]
             );
+          }else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
           }
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _actionButtonAction,
-          tooltip: 'Yo',
-          child: Icon(Icons.add)
-        ),
+          return CircularProgressIndicator();
+        }
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _actionButtonAction,
+        tooltip: 'Yo',
+        child: Icon(Icons.add)
+      ),
     );
   }
 }
