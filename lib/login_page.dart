@@ -30,19 +30,6 @@ class _LoginPageState extends State<LoginPage> {
   Model _model = Model();
 
   void _incrementCounter() async{
-
-/*
-    var user = new User();
-    user.username = "darttestuser22";
-    user.password = "darttestuserpass213";
-    try{
-      var postReq = await userapi_instance.userPost(user);
-      print("User created");
-      print(postReq);
-    } catch(e){
-      print(e);
-    }
-    */
     try {
       await userapi_instance.rootGet();
       print("Success token at incr");

@@ -1,11 +1,12 @@
 import 'package:dtapp_flutter/login_page.dart';
 import 'package:dtapp_flutter/main.dart';
+import 'package:dtapp_flutter/samples_page.dart';
+import 'package:dtapp_flutter/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart';
 
 import 'signup_page.dart';
 
-var sampleapi_instance = SamplesApi();
 final List<String> entries = <String>['A', 'B', 'C'];
 
 class HomePage extends StatefulWidget {
@@ -39,32 +40,8 @@ class _HomePageState extends State<HomePage> {
 
   void _actionButtonAction() async{
     print("Useless aciton button pressed");
-    print("Trying to get samples...");
-    try{
-      var samples = await sampleapi_instance.samplesGet(limit: 10);
-      print("Samples retrieved " + samples.length.toString());
-      samples.take(10).forEach((sample){
-        print(DateTime.fromMillisecondsSinceEpoch(sample.startDate));
-      });
-      //print(samples);
-    }catch(e){
-      print("samples error");
-      print(e);
-    }
   }
 
-  Future<List<Sample>> _fetchSamples() async {
-    try{
-      var samples = await sampleapi_instance.samplesGet(limit: 20, type: Type.sleep_);
-      print("Samples retrieved " + samples.length.toString());
-      return samples;
-    }catch(e){
-      print("samples error");
-      print(e);
-      return null;
-    }
-  }
- // TODO do filtering stuff
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,52 +61,16 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: FutureBuilder(
-        future: _fetchSamples(),
-        builder: (BuildContext context, snapshot) {
-          if(snapshot.hasData){
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext ibContext, int index) {
-                      return Container(
-                        height: 50,
-                        color: Colors.amber[200 + 100 * (index % 2)],
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Text('${snapshot.data[index].type} : ${snapshot.data[index].value}'),
-                                Text("Collected from: ${snapshot.data[index].source_}")
-                              ],
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Text("Start date: ${DateTime.fromMillisecondsSinceEpoch(snapshot.data[index].startDate)}"), 
-                                Text("End date: ${DateTime.fromMillisecondsSinceEpoch(snapshot.data[index].endDate)}")
-                              ],
-                            )
-                          ]
-                        )
-                      );
-                    }
-                  )
-                )
-              ]
-            );
-          }else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-          return CircularProgressIndicator();
-        }
+      body: Column(
+        children: <Widget>[
+          NavWidget("Samples", SamplesPage()),
+          NavWidget("test", SamplesPage()),
+          NavWidget("test", SamplesPage()),
+          NavWidget("test", SamplesPage()),
+          NavWidget("test", SamplesPage()),
+          Padding(padding: EdgeInsets.all(10)),
+          NavWidget("Settings", SettingsPage()),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _actionButtonAction,
@@ -138,6 +79,29 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class NavWidget extends StatelessWidget {
+
+  NavWidget(this.text, this.widget);
+
+  final Widget widget;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(child:ListTile(
+      onTap: (){
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => widget),
+        );
+      },
+      title: Text(text),
+    ));
+    
+  }
+
 }
 
 class Choice {
