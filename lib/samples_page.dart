@@ -25,10 +25,59 @@ class _SamplesPageState extends State<SamplesPage> {
   void _actionButtonAction() async{
     print("Useless aciton button pressed");
   }
+  
+  Future<List<Sample>> _fetchSamplesVaried() async {
+    try{
+      const List<Type> types = [
+        Type.distance_,
+        Type.elevation_,
+        Type.heartRate_,
+        Type.sleep_,
+        Type.stepCount_,
+      ];
+
+      List<Sample> variedSamples = List<Sample>();
+      await Future.forEach(types, (type) async{
+        var samples = await samplesapiInstance.samplesGet(limit: 2, type: type);
+        variedSamples.addAll(samples);
+      });
+
+      variedSamples.shuffle();
+
+      var newthing = variedSamples.fold<Map<Type, List<Sample>>>({}, (sampleMap, currentMap) {
+        if (sampleMap[currentMap.type] == null) {
+          sampleMap[currentMap.type] = [];
+        }
+        sampleMap[currentMap.type].add(currentMap);
+        return sampleMap;
+      });
+      newthing.forEach((e, v){
+          print(e.value + ":" + v.length.toString());
+          v.forEach((a){
+            print('\t' + a.value.toString());
+          });
+      });
+      /*
+      var map = Map.fromIterable(variedSamples, key: (e) => e.type, value: (e) => e);
+
+      map.forEach((e, v){
+          print(e.toString() + ":" + v.toString());
+      });
+      */
+
+      
+      print("Samples retrieved " + variedSamples.length.toString());
+      return variedSamples;
+    }catch(e){
+      print("samples error");
+      print(e);
+      return null;
+    }
+  }
 
   Future<List<Sample>> _fetchSamples() async {
     try{
-      var samples = await samplesapiInstance.samplesGet(limit: 200, type: _selectedChoice.type);
+      List<Sample> samples = await samplesapiInstance.samplesGet(limit: 200, type: _selectedChoice.type);
       print("Samples retrieved " + samples.length.toString());
       return samples;
     }catch(e){
@@ -59,7 +108,7 @@ class _SamplesPageState extends State<SamplesPage> {
         ],
       ),
       body: FutureBuilder(
-        future: _fetchSamples(),
+        future: _fetchSamplesVaried(),
         builder: (BuildContext context, snapshot) {
           if(snapshot.hasData){
             return Column(
@@ -71,29 +120,12 @@ class _SamplesPageState extends State<SamplesPage> {
                     shrinkWrap: true,
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext ibContext, int index) {
-                      return Container(
-                        height: 50,
-                        color: Colors.amber[200 + 100 * (index % 2)],
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Text('${snapshot.data[index].type} : ${(snapshot.data[index].value is double) ? snapshot.data[index].value.toStringAsFixed(4) : snapshot.data[index].value}'),
-                                Text("Collected from: ${snapshot.data[index].source_}")
-                              ],
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Text("Start date: ${DateTime.fromMillisecondsSinceEpoch(snapshot.data[index].startDate)}"), 
-                                Text("End date: ${DateTime.fromMillisecondsSinceEpoch(snapshot.data[index].endDate)}")
-                              ],
-                            )
-                          ]
-                        )
-                      );
+                      final color = Colors.lime[200 + 100 * (index % 2)];
+                      if(snapshot.data[index].type == Type.sleep_){
+                        return SleepSampleView(snapshot.data[index], color);
+                      }else{
+                        return GenericSampleView(snapshot.data[index], color);
+                      }
                     }
                   )
                 )
@@ -110,6 +142,71 @@ class _SamplesPageState extends State<SamplesPage> {
         tooltip: 'Yo',
         child: Icon(Icons.add)
       ),
+    );
+  }
+}
+
+class GenericSampleView extends StatelessWidget {
+  GenericSampleView(this.sample, this.color);
+  final Sample sample;
+  final Color color;
+  @override
+  Widget build(BuildContext context) {
+    var string = sample.type.toString();
+    return Container(
+      height: 50,
+      color: color,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text('${sample.type.value} : ${(sample.value is double) ? sample.value.toStringAsFixed(4) : sample.value}'),
+              Text("Collected from: ${sample.source_}")
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text("Start date: ${DateTime.fromMillisecondsSinceEpoch(sample.startDate)}"), 
+              Text("End date: ${DateTime.fromMillisecondsSinceEpoch(sample.endDate)}")
+            ],
+          )
+        ]
+      )
+    );
+  }
+}
+class SleepSampleView extends StatelessWidget {
+  SleepSampleView(this.sample, this.color);
+  final Sample sample;
+  final Color color;
+  @override
+  Widget build(BuildContext context) {
+    final Duration duration = Duration(milliseconds: sample.value);
+    return Container(
+      height: 50,
+      color: color,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text('Slept ${duration.inHours} hrs ${duration.inMinutes - (duration.inHours * 60)} min'),
+              Text("Collected from: ${sample.source_}")
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text("From: ${DateTime.fromMillisecondsSinceEpoch(sample.startDate)}"), 
+              Text("To: ${DateTime.fromMillisecondsSinceEpoch(sample.endDate)}")
+            ],
+          )
+        ]
+      )
     );
   }
 }
