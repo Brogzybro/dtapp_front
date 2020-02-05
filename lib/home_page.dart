@@ -19,6 +19,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static final List<Widget> _widgetOptions = <Widget>[
+    SamplesPage(),
+    SettingsPage(),
+  ];
+
+void _onItemTapped(int index) {
+  setState(() {
+    _selectedIndex = index;
+  });
+}
+
   void _select(Choice choice) {
     setState(() {
       switch (choice.action) {
@@ -38,15 +51,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _actionButtonAction() async{
-    print("Useless aciton button pressed");
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home Page"),
+        title: Text("Digital Twin"),
         actions: <Widget>[
           PopupMenuButton(
             onSelected: _select,
@@ -61,21 +70,21 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          NavWidget("Samples", SamplesPage()),
-          NavWidget("test", SamplesPage()),
-          NavWidget("test", SamplesPage()),
-          NavWidget("test", SamplesPage()),
-          NavWidget("test", SamplesPage()),
-          Padding(padding: EdgeInsets.all(10)),
-          NavWidget("Settings", SettingsPage()),
+      body: _widgetOptions.elementAt(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const<BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.art_track), 
+            title: Text("Samples")
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings), 
+            title: Text("Settings")
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _actionButtonAction,
-        tooltip: 'Yo',
-        child: Icon(Icons.add)
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
     );
   }
