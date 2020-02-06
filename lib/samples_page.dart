@@ -15,42 +15,9 @@ class SamplesPage extends StatefulWidget {
   _SamplesPageState createState() => _SamplesPageState();
 }
 
-enum Department {
-  treasury,
-  state
-}
-
+// TODO: Load more entries when scrolling down
 class _SamplesPageState extends State<SamplesPage> {
   TypeChoice _selectedChoice = choices[0];
-
-  Future<void> _openDialog() async {
-    switch (await showDialog<Department>(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: const Text('Select assignment'),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () { Navigator.pop(context, Department.treasury); },
-              child: const Text('Treasury department'),
-            ),
-            SimpleDialogOption(
-              onPressed: () { Navigator.pop(context, Department.state); },
-              child: const Text('State department'),
-            ),
-          ],
-        );
-      }
-    )) {
-      case Department.treasury:
-        // Let's go.
-        // ...
-      break;
-      case Department.state:
-        // ...
-      break;
-    }
-  }
 
   void _select(TypeChoice choice) {
     setState(() {
@@ -60,7 +27,6 @@ class _SamplesPageState extends State<SamplesPage> {
 
   void _actionButtonAction() async{
     print("Useless aciton button pressed yo");
-    _openDialog();
   }
   
   @override

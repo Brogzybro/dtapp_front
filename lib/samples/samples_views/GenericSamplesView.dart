@@ -57,7 +57,7 @@ class GenericSamplesView extends StatelessWidget {
             itemCount: data.length,
             itemBuilder: (BuildContext ibContext, int index) {
               final color = Colors.lime[200 + 100 * (index % 2)];
-              return selectSampleView(data[index].type, data[index], color);
+              return selectSampleView(context, data[index].type, data[index], color);
             }
           );
         }else if (snapshot.hasError) {
