@@ -18,7 +18,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   Model _model = new Model();
-
+  
   void _actionButtonAction(){
     print("Useless aciton button pressed");
   }
