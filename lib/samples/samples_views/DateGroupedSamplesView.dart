@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dtapp_flutter/home_page.dart';
-import 'package:dtapp_flutter/sample_views/_sampleViewSelect.dart';
+import 'package:dtapp_flutter/samples/sample_views/_sampleViewSelect.dart';
 import 'package:openapi/api.dart' hide Type;
 import 'package:openapi/api.dart' as OA;
 import 'package:dtapp_flutter/samples_page.dart' show TypeChoice;
