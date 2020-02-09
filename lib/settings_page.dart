@@ -5,6 +5,7 @@ import 'package:openapi/api.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 FitbitApi fitbitApi = FitbitApi();
+WithingsApi withingsApi = WithingsApi();
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -12,6 +13,30 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  void _connectWithings() async {
+    
+    final idk = await fitbitApi.userTokenPost();
+    print(idk.token);
+    
+
+    final url =
+        withingsApi.apiClient.basePath + "/withings/auth?token=" + idk.token;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<bool> _checkWithingsConnection() async {
+    try {
+      return await withingsApi.withingsIsauthorizedGet();
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
   void _connectFitbit() async {
     final idk = await fitbitApi.userTokenPost();
     print(idk.token);
@@ -61,6 +86,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       rightItem: ConnectionItem(
                         func: _connectFitbit,
                         future: _checkFitbitConnection,
+                      )),
+                  SettingsItem(
+                      leftItem: Text("Withings connection"),
+                      rightItem: ConnectionItem(
+                        func: _connectWithings,
+                        future: _checkWithingsConnection,
                       )),
                 ],
               )
