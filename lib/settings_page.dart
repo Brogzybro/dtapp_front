@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:openapi/api.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'login_page.dart';
+
 FitbitApi fitbitApi = FitbitApi();
 WithingsApi withingsApi = WithingsApi();
 
@@ -14,10 +16,8 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   void _connectWithings() async {
-    
     final idk = await fitbitApi.userTokenPost();
     print(idk.token);
-    
 
     final url =
         withingsApi.apiClient.basePath + "/withings/auth?token=" + idk.token;
@@ -64,6 +64,18 @@ class _SettingsPageState extends State<SettingsPage> {
     return Future.value("value doesnt matter ay lmao");
   }
 
+  void _logout() {
+    print("yo logging out");
+    if (loggedInUser != null) {
+      print(loggedInUser.username);
+      loggedInUser = null;
+    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +87,9 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsSection(
                 title: Text("Info"),
                 children: <Widget>[
-                  SettingsItem(leftItem: Text("Username"), rightItem: Text(loggedInUser.username)),
+                  SettingsItem(
+                      leftItem: Text("Username"),
+                      rightItem: Text(loggedInUser.username)),
                 ],
               ),
               SettingsSection(
@@ -93,6 +107,15 @@ class _SettingsPageState extends State<SettingsPage> {
                         func: _connectWithings,
                         future: _checkWithingsConnection,
                       )),
+                ],
+              ),
+              SettingsSection(
+                title: Text("Actions"),
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text("Log out"),
+                    onPressed: _logout,
+                  )
                 ],
               )
             ]),
@@ -142,12 +165,14 @@ class SettingsSection extends StatelessWidget {
   final List<Widget> children;
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(margin: EdgeInsets.all(10), child: title),
-          Column(children: children)
-        ]);
+    return Container(
+        padding: EdgeInsets.only(left: 5, right: 5),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(margin: EdgeInsets.all(10), child: title),
+              Column(children: children)
+            ]));
   }
 }
 

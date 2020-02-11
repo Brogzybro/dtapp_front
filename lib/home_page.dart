@@ -54,6 +54,7 @@ void _onItemTapped(int index) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /*
       appBar: AppBar(
         title: Text("Digital Twin"),
         actions: <Widget>[
@@ -70,6 +71,7 @@ void _onItemTapped(int index) {
           )
         ],
       ),
+      */
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const<BottomNavigationBarItem>[
