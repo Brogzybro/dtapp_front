@@ -112,7 +112,7 @@ packages:
   openapi:
     dependency: "direct main"
     description:
-      path: "dartapi\\test"
+      path: "dartapi/test"
       relative: true
     source: path
     version: "1.0.0"

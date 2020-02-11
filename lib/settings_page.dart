@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:dtapp_flutter/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:openapi/api.dart';
+import 'package:openapi/api.dart' hide Type;
+import 'package:openapi/api.dart' as OA;
 import 'package:url_launcher/url_launcher.dart';
 
 import 'login_page.dart';
 
 FitbitApi fitbitApi = FitbitApi();
+SamplesApi samplesApi = SamplesApi();
 WithingsApi withingsApi = WithingsApi();
 
 class SettingsPage extends StatefulWidget {
@@ -76,6 +80,31 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void _exportData() async {
+
+    var allSamples = List<Sample>();
+    const SAMPLE_LIMIT = 10000;
+    var offset = 0;
+    var curLength = 0;
+    do {
+      final samples = await samplesApi.samplesGet(limit: SAMPLE_LIMIT, offset: offset);
+      offset += samples.length;
+      curLength = samples.length;
+      allSamples.addAll(samples);
+      print("offset " + offset.toString());
+    } while (false); // curLength >= SAMPLE_LIMIT);
+
+    print("Got " + allSamples.length.toString() + " samples");
+    final samplesJsonCompatibleMap = allSamples.map((sample){
+        final jsonSample = sample.toJson();
+        final type = (jsonSample['type'] as OA.Type);
+        jsonSample['type'] = type.value;
+        return jsonSample;
+      }).toList();
+    final jsonSamples  = jsonEncode(samplesJsonCompatibleMap);
+    print(jsonSamples);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,9 +142,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text("Actions"),
                 children: <Widget>[
                   RaisedButton(
+                    child: Text("Export data"),
+                    onPressed: _exportData,
+                  ),
+                  RaisedButton(
                     child: Text("Log out"),
                     onPressed: _logout,
-                  )
+                  ),
                 ],
               )
             ]),
