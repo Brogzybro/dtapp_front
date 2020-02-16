@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
 import 'package:openapi/api.dart' as OA;
 
-import 'GenericSampleView.dart';
-import 'SleepSampleView.dart';
+import 'sample_views/generic_sample_view.dart';
+import 'sample_views/sleep_sample_view.dart';
 
 Widget selectSampleView(BuildContext context, OA.Type type, Sample sample, Color color) {
   switch (type) {

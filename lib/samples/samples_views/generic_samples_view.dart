@@ -1,4 +1,4 @@
-import 'package:dtapp_flutter/samples/sample_views/_sampleViewSelect.dart';
+import 'package:dtapp_flutter/samples/sample_view_select.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
 import 'package:openapi/api.dart' as OA;

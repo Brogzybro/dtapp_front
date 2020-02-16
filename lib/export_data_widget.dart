@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dtapp_flutter/util/sampleJSONEncoding.dart';
+import 'package:dtapp_flutter/util/sample_json_encoding.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
 import 'package:path_provider/path_provider.dart';
