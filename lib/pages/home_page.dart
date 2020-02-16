@@ -1,7 +1,7 @@
-import 'package:dtapp_flutter/login_page.dart';
+import 'package:dtapp_flutter/pages/login_page.dart';
 import 'package:dtapp_flutter/main.dart';
-import 'package:dtapp_flutter/samples_page.dart';
-import 'package:dtapp_flutter/settings_page.dart';
+import 'package:dtapp_flutter/pages/samples_page.dart';
+import 'package:dtapp_flutter/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart';
 

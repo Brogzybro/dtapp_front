@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
 
-import 'samples/samples_type_choices.dart';
-import 'samples/samples_views/date_grouped_samples_view.dart';
+import '../samples/samples_type_choices.dart';
+import '../samples/samples_views/date_grouped_samples_view.dart';
 
 final samplesapiInstance = SamplesApi();
 
