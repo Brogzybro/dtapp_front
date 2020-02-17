@@ -2,7 +2,6 @@ import 'package:dtapp_flutter/samples/sample_main_views/distance_main_view.dart'
 import 'package:dtapp_flutter/samples/samples_type_choices.dart';
 import 'package:dtapp_flutter/samples/samples_views/date_grouped_samples_view.dart';
 import 'package:flutter/material.dart';
-import 'package:openapi/api.dart' hide Type;
 import 'package:openapi/api.dart' as OA show Type;
 
 class SamplePage extends StatefulWidget {

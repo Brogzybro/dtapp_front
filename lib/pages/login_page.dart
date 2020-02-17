@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _incrementCounter() async{
     try {
-      await userapi_instance.rootGet();
+      await userapiInstance.rootGet();
       print("Success token at incr");
     } catch (e){
       print(e);
@@ -157,11 +157,11 @@ class _LoginPageState extends State<LoginPage> {
 
 Future<bool> attemptLogin(Model model) async{
   print("Attempting login...");
-  HttpBasicAuth bauth = userapi_instance.apiClient.getAuthentication("basicAuth");
+  HttpBasicAuth bauth = userapiInstance.apiClient.getAuthentication("basicAuth");
   bauth.username = model.username;
   bauth.password = model.password;
   try {
-    await userapi_instance.rootGet();
+    await userapiInstance.rootGet();
     print("Success");
     User user = new User();
     user.username = model.username;

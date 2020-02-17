@@ -1,3 +1,4 @@
+import 'package:dtapp_flutter/custom_widgets/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
 import 'package:openapi/api.dart' as OA;
@@ -20,7 +21,8 @@ class DistanceState {
 
 class _DistanceMainViewState extends State<DistanceMainView> {
   static const DISTANCE_TYPE = OA.Type.distance_;
-  Sample test;
+  List<Sample> _samples = List<Sample>();
+  static DateTime _now = DateTime.utc(2019, 12, 5, 18);
 
   // Input: distance as kilometers
   static String _distanceToReadable(double distance) {
@@ -29,22 +31,28 @@ class _DistanceMainViewState extends State<DistanceMainView> {
         : distance.toStringAsFixed(2) + " km";
   }
 
+  Future<List<Sample>> _getSamples() async {
+    final now = DateTime.utc(2019, 12, 5, 18);
+    final ninetyDaysAgo =
+        now.subtract(Duration(days: 90)).millisecondsSinceEpoch;
+
+    if (_samples.length == 0)
+      _samples.addAll(await samplesApi.samplesGet(
+          startDate: ninetyDaysAgo, type: DISTANCE_TYPE));
+
+    return _samples;
+  }
+
   Future<DistanceState> _fetchDistances() async {
     try {
-      final now = DateTime.now().subtract(Duration(days: 73));
-      print(now);
-      final ninetyDaysAgo =
-          now.subtract(Duration(days: 90)).millisecondsSinceEpoch;
-      print(now);
-      final samples = await samplesApi.samplesGet(
-          startDate: ninetyDaysAgo, type: DISTANCE_TYPE);
+      final samples = await _getSamples();
 
       print("DISTANCE - Samples retrieved: " + samples.length.toString());
       return DistanceState(
         samples
             .where((sample) =>
                 sample.startDate >
-                now.subtract(Duration(days: 1)).millisecondsSinceEpoch)
+                _now.subtract(Duration(days: 1)).millisecondsSinceEpoch)
             .map((sample) {
           print(sample.value.runtimeType);
           return sample.value;
@@ -52,7 +60,7 @@ class _DistanceMainViewState extends State<DistanceMainView> {
         samples
             .where((sample) =>
                 sample.startDate >
-                now.subtract(Duration(days: 7)).millisecondsSinceEpoch)
+                _now.subtract(Duration(days: 7)).millisecondsSinceEpoch)
             .map((sample) {
           print(sample.value.runtimeType);
           return sample.value;
@@ -60,7 +68,7 @@ class _DistanceMainViewState extends State<DistanceMainView> {
         samples
             .where((sample) =>
                 sample.startDate >
-                now.subtract(Duration(days: 30)).millisecondsSinceEpoch)
+                _now.subtract(Duration(days: 30)).millisecondsSinceEpoch)
             .map((sample) {
           print(sample.value.runtimeType);
           return sample.value;
@@ -77,110 +85,94 @@ class _DistanceMainViewState extends State<DistanceMainView> {
     }
   }
 
+  Future<Map<DateTime, double>> _fetchDistancesGroupedByDays() async {
+    return (await _getSamples()).fold<Map<DateTime, double>>({},
+        (sampleMap, currentMap) {
+      final DateTime dt =
+          DateTime.fromMillisecondsSinceEpoch(currentMap.endDate);
+      final DateTime justDate = DateTime(dt.year, dt.month, dt.day);
+      if (sampleMap[justDate] == null) {
+        sampleMap[justDate] = 0;
+      }
+      sampleMap[justDate] += currentMap.value;
+      return sampleMap;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _fetchDistances(),
-      builder: (BuildContext context, snapshot) {
-        if (snapshot.hasData) {
-          final data = snapshot.data as DistanceState;
-          return Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Text(
-                    "Distance traveled",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                  ),
+    return ContentColumn(children: <Widget>[
+      FutureBuilder(
+        future: _fetchDistances(),
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData) {
+            final data = snapshot.data as DistanceState;
+            return CustomTable.withColor(
+              title: "Summary",
+              color: Colors.grey,
+              shade: CustomShade.shade2,
+              children: <CustomRowData>[
+                CustomRowData(
+                  Text("Last 24 hours"),
+                  _distanceToReadable(data.totalLast24Hours),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
-                        ),
-                      ),
-                      child: Padding(
-                          padding: EdgeInsets.only(
-                              left: 10, right: 10, top: 5, bottom: 5),
-                          child: Text(
-                            "Summary",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          )),
-                    ),
-                    Table(
-                      border: TableBorder(
-                        horizontalInside: BorderSide(color: Colors.grey[400]),
-                      ),
-                      children: <TableRow>[
-                        customRow(
-                          left: Text("Last 24 hours"),
-                          right:
-                              Text(_distanceToReadable(data.totalLast24Hours)),
-                          color: Colors.grey[300],
-                        ),
-                        customRow(
-                          left: Text("Last 7 days"),
-                          right: Text(_distanceToReadable(data.totalLast7Days)),
-                          color: Colors.grey[300],
-                        ),
-                        customRow(
-                          left: Text("Last 30 days"),
-                          right:
-                              Text(_distanceToReadable(data.totalLast30Days)),
-                          color: Colors.grey[300],
-                        ),
-                        customRow(
-                          left: Text("Last 90 days"),
-                          right:
-                              Text(_distanceToReadable(data.totalLast90Days)),
-                          color: Colors.grey[300],
-                          last: true,
-                        ),
-                      ],
-                    ),
-                  ],
-                )
+                CustomRowData(
+                  Text("Last 7 days"),
+                  _distanceToReadable(data.totalLast7Days),
+                ),
+                CustomRowData(
+                  Text("Last 30 days"),
+                  _distanceToReadable(data.totalLast30Days),
+                ),
+                CustomRowData(
+                  Text("Last 90 days"),
+                  _distanceToReadable(data.totalLast90Days),
+                ),
               ],
-            ),
-          );
-        }
-        return Center(child:CircularProgressIndicator());
-      },
-    );
+            );
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
+      FutureBuilder(
+        future: _fetchDistancesGroupedByDays(),
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData) {
+            final data = snapshot.data as Map<DateTime, double>;
+            return CustomTable.withColor(
+              title: "Distance walked on day",
+              color: Colors.teal,
+              shade: CustomShade.shade0,
+              children: data
+                  .map((k, v) => MapEntry(
+                      k,
+                      CustomRowData(Text("${k.year}/${k.month}/${k.day}"),
+                          _distanceToReadable(v))))
+                  .values
+                  .toList(),
+            );
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
+    ]);
   }
 }
 
-TableRow customRow(
-    {@required Text left,
-    @required Text right,
-    @required Color color,
-    bool last = false}) {
-  return TableRow(
-    decoration: BoxDecoration(
-        color: color,
-        borderRadius: last
-            ? BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              )
-            : null),
-    children: <Widget>[
-      Padding(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-        child: left,
-      ),
-      Padding(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-        child: right,
-      ),
-    ],
-  );
+class ContentColumn extends StatelessWidget {
+  ContentColumn({@required this.children});
+  final List<Widget> children;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: ListView(
+          children: children
+              .map((child) => Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: child,
+                  ))
+              .toList()),
+    );
+  }
 }

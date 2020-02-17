@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
-import 'package:openapi/api.dart' as OA;
 
 class GenericSampleView extends StatelessWidget {
   GenericSampleView(this.context, this.sample, this.color);
@@ -44,7 +43,6 @@ class GenericSampleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var string = sample.type.toString();
     return GestureDetector(
       onTap: _openDialog,
       child: Container(

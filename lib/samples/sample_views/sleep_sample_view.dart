@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
-import 'package:openapi/api.dart' as OA;
 
 class SleepSampleView extends StatelessWidget {
   SleepSampleView(this.sample, this.color);

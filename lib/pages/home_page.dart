@@ -1,11 +1,6 @@
-import 'package:dtapp_flutter/pages/login_page.dart';
-import 'package:dtapp_flutter/main.dart';
 import 'package:dtapp_flutter/pages/samples_page.dart';
 import 'package:dtapp_flutter/pages/settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:openapi/api.dart';
-
-import 'signup_page.dart';
 
 final List<String> entries = <String>['A', 'B', 'C'];
 
@@ -20,18 +15,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  // static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
     SamplesPage(),
     SettingsPage(),
   ];
 
-void _onItemTapped(int index) {
-  setState(() {
-    _selectedIndex = index;
-  });
-}
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
+/*
   void _select(Choice choice) {
     setState(() {
       switch (choice.action) {
@@ -50,6 +46,7 @@ void _onItemTapped(int index) {
       }
     });
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -74,15 +71,11 @@ void _onItemTapped(int index) {
       */
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
-        items: const<BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.art_track), 
-            title: Text("Samples")
-          ),
+              icon: Icon(Icons.art_track), title: Text("Samples")),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings), 
-            title: Text("Settings")
-          ),
+              icon: Icon(Icons.settings), title: Text("Settings")),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
@@ -93,7 +86,6 @@ void _onItemTapped(int index) {
 }
 
 class NavWidget extends StatelessWidget {
-
   NavWidget(this.text, this.widget);
 
   final Widget widget;
@@ -101,8 +93,9 @@ class NavWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(child:ListTile(
-      onTap: (){
+    return Card(
+        child: ListTile(
+      onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => widget),
@@ -110,9 +103,7 @@ class NavWidget extends StatelessWidget {
       },
       title: Text(text),
     ));
-    
   }
-
 }
 
 class Choice {

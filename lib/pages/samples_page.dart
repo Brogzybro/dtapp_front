@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
 
 import '../samples/samples_type_choices.dart';
-import '../samples/samples_views/date_grouped_samples_view.dart';
 
 final samplesapiInstance = SamplesApi();
 
@@ -16,15 +15,16 @@ class SamplesPage extends StatefulWidget {
   _SamplesPageState createState() => _SamplesPageState();
 }
 
-// TODO: Load more entries when scrolling down
 class _SamplesPageState extends State<SamplesPage> {
-  TypeChoice _selectedChoice = choices[0];
+  // TypeChoice _selectedChoice = choices[0];
 
+  /*
   void _select(TypeChoice choice) {
     setState(() {
       _selectedChoice = choice;
     });
   }
+  */
 
   void _actionButtonAction() async {
     print("Useless aciton button pressed yo");

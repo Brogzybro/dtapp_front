@@ -46,7 +46,7 @@ class _ExportDataWidgetState extends State<ExportDataWidget> {
 
     print("Got " + allSamples.length.toString() + " samples");
 
-    String jsonSamples = null;
+    String jsonSamples;
     try {
       jsonSamples = sampleJSONEncoding(allSamples);
     } catch (e) {

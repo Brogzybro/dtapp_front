@@ -3,8 +3,8 @@ import 'package:openapi/api.dart';
 
 import 'login_page.dart';
 
-var userapi_instance = UserApi();
-var fitbitapi_instance = FitbitApi();
+var userapiInstance = UserApi();
+var fitbitapiInstance = FitbitApi();
 
 class SignupPage extends StatefulWidget {
   SignupPage({Key key, this.title}) : super(key: key);
@@ -25,7 +25,6 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text("Sign up to Digital Twin")
@@ -140,7 +139,7 @@ Future<bool> attemptSignup(Model model) async{
   user.username = model.username;
   user.password = model.password;
   try{
-    var postReq = await userapi_instance.userPost(user);
+    var postReq = await userapiInstance.userPost(user);
     print("User created");
     print(postReq);
     return true;
