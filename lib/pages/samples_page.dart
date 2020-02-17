@@ -72,7 +72,13 @@ class _SamplesPageState extends State<SamplesPage> {
               itemBuilder: (BuildContext context, index) {
                 return Card(
                     child: ListTile(
-                  title: Text(choices[index].title),
+                  title: Row(children: <Widget>[
+                    Icon(choices[index].iconData),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(choices[index].title),
+                  ]),
                   trailing: Icon(Icons.keyboard_arrow_right),
                   onTap: () => _goToSamplePage(context, choices[index]),
                 ));

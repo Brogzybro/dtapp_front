@@ -17,13 +17,13 @@ class _SamplePageState extends State<SamplePage> {
 
   @override
   initState() {
-    final sampleMainView = _sampleMainViewFactory(widget.choice);         
+    final sampleMainView = _sampleMainViewFactory(widget.choice);
     _tabViews = [
       if (sampleMainView != null) Tab(child: Text("Main")),
       Tab(child: Text("Raw")),
     ];
     _tabChoices = [
-      if(sampleMainView != null) sampleMainView,
+      if (sampleMainView != null) sampleMainView,
       DateGroupedSamplesView(widget.choice),
     ];
     super.initState();
@@ -56,7 +56,8 @@ class _SamplePageState extends State<SamplePage> {
                   )),
             ],
           ),
-          body: TabBarView(children: _tabChoices),
+          body: TabBarView(
+              physics: NeverScrollableScrollPhysics(), children: _tabChoices),
           //DateGroupedSamplesView(widget.choice),
         ));
   }
