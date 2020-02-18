@@ -1,4 +1,5 @@
 import 'package:dtapp_flutter/samples/sample_main_views/distance_main_view.dart';
+import 'package:dtapp_flutter/samples/sample_main_views/heartrate_main_view.dart';
 import 'package:dtapp_flutter/samples/samples_type_choices.dart';
 import 'package:dtapp_flutter/samples/samples_views/date_grouped_samples_view.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,8 @@ class _SamplePageState extends State<SamplePage> {
       case OA.Type.distance_:
         return DistanceMainView();
         break;
+      case OA.Type.heartRate_:
+        return HeartRateMainView();
       default:
         return null;
     }

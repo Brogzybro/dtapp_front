@@ -112,7 +112,7 @@ class _DateGroupedSamplesViewState extends State<DateGroupedSamplesView> {
                                     (BuildContext ibContext, int index_2) {
                                   Sample sample = values[index_2];
                                   final color =
-                                      Colors.lime[200 + 100 * (index_2 % 2)];
+                                      Colors.blue[100 - 50 * (index_2 % 2)];
                                   return selectSampleView(
                                       context, sample.type, sample, color);
                                 })

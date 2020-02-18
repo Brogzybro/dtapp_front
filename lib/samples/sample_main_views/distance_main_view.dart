@@ -22,7 +22,7 @@ class DistanceState {
 
 class _DistanceMainViewState extends State<DistanceMainView> {
   static const DISTANCE_TYPE = OA.Type.distance_;
-  static DateTime _now = DateTime.utc(2019, 12, 5, 18);
+  static DateTime _now = DateTime.now(); // DateTime.utc(2019, 12, 5, 18);
 
   // Input: distance as kilometers
   static String _distanceToReadable(double distance) {
@@ -32,9 +32,8 @@ class _DistanceMainViewState extends State<DistanceMainView> {
   }
 
   Future<List<Sample>> _getSamples() async {
-    final now = DateTime.utc(2019, 12, 5, 18);
     final ninetyDaysAgo =
-        now.subtract(Duration(days: 90)).millisecondsSinceEpoch;
+        _now.subtract(Duration(days: 90)).millisecondsSinceEpoch;
 
     return await samplesApi.samplesGet(
         startDate: ninetyDaysAgo, type: DISTANCE_TYPE);
