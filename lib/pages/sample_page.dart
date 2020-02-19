@@ -53,7 +53,9 @@ class _SamplePageState extends State<SamplePage> {
               Padding(
                   padding: EdgeInsets.all(10),
                   child: TabBar(
-                    indicator: BoxDecoration(color: Colors.white30),
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)), 
+                      color: Colors.white30),
                     isScrollable: true,
                     tabs: _tabViews,
                   )),
