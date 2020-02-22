@@ -1,12 +1,14 @@
+import 'package:dtapp_flutter/model/ecg.dart';
 import 'package:dtapp_flutter/samples/sample_views/sample_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
 
-class GenericSampleView extends StatelessWidget {
-  GenericSampleView(this.context, this.sample, this.color);
+class ECGSampleView extends StatelessWidget {
+  ECGSampleView(this.context, this.sample, this.color) : ecg = ECG.fromJson(sample.value);
   final Sample sample;
   final Color color;
   final BuildContext context;
+  final ECG ecg;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class GenericSampleView extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Text('${sample.type.value} : ${(sample.value is double) ? (sample.value as num).toStringAsFixed(4) : sample.value}'),
+                Text('${sample.type.value} : [id: ${ecg.signalid.toString()}]'),
                 Text("Collected from: ${sample.source_}")
               ],
             ),

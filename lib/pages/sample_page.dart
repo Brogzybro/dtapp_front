@@ -1,4 +1,5 @@
 import 'package:dtapp_flutter/samples/sample_main_views/distance_main_view.dart';
+import 'package:dtapp_flutter/samples/sample_main_views/ecg_main_view.dart';
 import 'package:dtapp_flutter/samples/sample_main_views/heartrate_main_view.dart';
 import 'package:dtapp_flutter/samples/samples_type_choices.dart';
 import 'package:dtapp_flutter/samples/samples_views/date_grouped_samples_view.dart';
@@ -37,6 +38,8 @@ class _SamplePageState extends State<SamplePage> {
         break;
       case OA.Type.heartRate_:
         return HeartRateMainView();
+      case OA.Type.ecg_:
+        return ECGMainView();
       default:
         return null;
     }

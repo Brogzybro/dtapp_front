@@ -68,7 +68,7 @@ class _DistanceMainViewState extends State<DistanceMainView> {
       samples.map((sample) {
         print(sample.value.runtimeType);
         return sample.value;
-      }).reduce((value, element) => value + element),
+      }).reduce((value, element) => (value as num) + element),
     );
   }
 
