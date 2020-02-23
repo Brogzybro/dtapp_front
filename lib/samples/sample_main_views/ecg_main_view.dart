@@ -12,28 +12,47 @@ class ECGMainView extends StatefulWidget {
   _ECGMainViewState createState() => _ECGMainViewState();
 }
 
+class SampleOffset {
+  SampleOffset(this.sample, this.offset);
+
+  final Sample sample;
+  final int offset;
+}
+
 class ECGNavigator {
-  var current = 0;
+  int _offset = 0;
+
+  int get offset {
+    return _offset;
+  }
+
+  set offset(off) {
+    _offset = off;
+  }
 
   void next() {
-    if (current > 0) current--;
+    _offset++;
   }
 
   void previous() {
-    current++;
+    if (_offset > 0) _offset--;
   }
 }
 
 class _ECGMainViewState extends State<ECGMainView> {
   ECGNavigator _nav = ECGNavigator();
+  SampleOffset _lastSample;
 
-  Future<List<Sample>> _getLastSample() async {
-    print(_nav.current);
-    return await samplesApi.samplesGet(
+  Future<SampleOffset> _getLastSample() async {
+    print(_nav.offset);
+    var samples = await samplesApi.samplesGet(
       type: OA.Type.ecg_,
       limit: 1,
-      offset: _nav.current,
+      offset: _nav.offset,
     );
+    return (samples.isNotEmpty)
+        ? SampleOffset(samples.first, _nav.offset)
+        : SampleOffset(null, null);
   }
 
   _leftTap() {
@@ -54,14 +73,23 @@ class _ECGMainViewState extends State<ECGMainView> {
           future: _getLastSample(),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
-              final samples = snapshot.data as List<Sample>;
+              var sampleO = snapshot.data as SampleOffset;
 
-              final date = samples.isNotEmpty
-                  ? DateTime.fromMillisecondsSinceEpoch(samples.first.startDate)
+              if (sampleO.sample == null) {
+                sampleO = _lastSample;
+                _nav.offset = _lastSample.offset;
+              }else{
+                _lastSample = sampleO;
+              }
+
+              Sample sample = (sampleO.sample == null) ? null : sampleO.sample;
+
+              final date = (sample != null)
+                  ? DateTime.fromMillisecondsSinceEpoch(sample.startDate)
                   : null;
-              final data = samples.isNotEmpty
+              final data = (sample != null)
                   ? ECG
-                      .fromJson(samples.first.value)
+                      .fromJson(sample.value)
                       .signal
                       .asMap()
                       .entries
@@ -117,7 +145,7 @@ class _ECGMainViewState extends State<ECGMainView> {
                                   style: TextStyle(fontSize: 20),
                                 )
                               ])
-                          ..add(Text(_nav.current.toString())),
+                          ..add(Text(_nav.offset.toString())),
                       ),
                       GestureDetector(
                         onTap: _rightTap,
@@ -128,7 +156,7 @@ class _ECGMainViewState extends State<ECGMainView> {
                       ),
                     ],
                   ),
-                  if (samples.isNotEmpty)
+                  if (sample != null)
                     Padding(
                         padding: EdgeInsets.only(
                             left: 50, right: 50, top: 20, bottom: 20),
@@ -136,14 +164,14 @@ class _ECGMainViewState extends State<ECGMainView> {
                           CustomRowData(
                             Text("Sample frequency"),
                             ECG
-                                .fromJson(samples.first.value)
+                                .fromJson(sample.value)
                                 .sampling_frequency
                                 .toString(),
                           ),
                           CustomRowData(
                             Text("Wear position"),
                             ECG
-                                .fromJson(samples.first.value)
+                                .fromJson(sample.value)
                                 .wearposition
                                 .toString(),
                           )

@@ -1,3 +1,4 @@
+import 'package:dtapp_flutter/util/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
 
@@ -18,14 +19,14 @@ class SleepSampleView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Text('Slept ${duration.inHours} hrs ${duration.inMinutes - (duration.inHours * 60)} min'),
-              Text("Collected from: ${sample.source_}")
+              Text("Source: ${sample.source_}")
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text("From: ${DateTime.fromMillisecondsSinceEpoch(sample.startDate)}"), 
-              Text("To: ${DateTime.fromMillisecondsSinceEpoch(sample.endDate)}")
+              Text("From: ${formatDate(DateTime.fromMillisecondsSinceEpoch(sample.startDate))}"), 
+              Text("To: ${formatDate(DateTime.fromMillisecondsSinceEpoch(sample.endDate))}")
             ],
           )
         ]

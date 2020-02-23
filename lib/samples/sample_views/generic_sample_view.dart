@@ -24,7 +24,7 @@ class GenericSampleView extends StatelessWidget {
                     children: <Widget>[
                       Text(
                           '${sample.type.value} : ${(sample.value is double) ? (sample.value as num).toStringAsFixed(4) : sample.value}'),
-                      Text("Collected from: ${sample.source_}")
+                      Text("Source: ${sample.source_}")
                     ],
                   ),
                   Column(
