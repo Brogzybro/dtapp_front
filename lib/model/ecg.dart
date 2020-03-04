@@ -6,9 +6,14 @@ class ECG {
   int wearposition;
 
   ECG.fromJson(Map<String, dynamic> json) {
-    signalid = json['signalid'];
-    signal = (json['signal'] as List).map((vol) => vol as int).toList();
-    sampling_frequency = json['sampling_frequency'];
-    wearposition = json['wearposition'];
+    try {
+      signalid = json['signalid'];
+      signal = (json['signal'] as List).map((vol) => vol as int).toList();
+      sampling_frequency = json['sampling_frequency'];
+      wearposition = json['wearposition'];
+    } catch (e) {
+      print('Invalid ECG sample');
+      print(e);
+    }
   }
 }

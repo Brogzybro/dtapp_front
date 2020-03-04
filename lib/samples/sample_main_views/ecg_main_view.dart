@@ -78,22 +78,18 @@ class _ECGMainViewState extends State<ECGMainView> {
               if (sampleO.sample == null) {
                 sampleO = _lastSample;
                 _nav.offset = _lastSample.offset;
-              }else{
+              } else {
                 _lastSample = sampleO;
               }
 
               Sample sample = (sampleO.sample == null) ? null : sampleO.sample;
+              ECG ecg = ECG.fromJson(sample.value);
 
               final date = (sample != null)
                   ? DateTime.fromMillisecondsSinceEpoch(sample.startDate)
                   : null;
-              final data = (sample != null)
-                  ? ECG
-                      .fromJson(sample.value)
-                      .signal
-                      .asMap()
-                      .entries
-                      .map((entry) {
+              final data = (sample != null && ecg.signal != null)
+                  ? ecg.signal.asMap().entries.map((entry) {
                       return SeriesECG(entry.key, entry.value);
                     }).toList()
                   : List<SeriesECG>();
@@ -170,10 +166,7 @@ class _ECGMainViewState extends State<ECGMainView> {
                           ),
                           CustomRowData(
                             Text("Wear position"),
-                            ECG
-                                .fromJson(sample.value)
-                                .wearposition
-                                .toString(),
+                            ECG.fromJson(sample.value).wearposition.toString(),
                           )
                         ]))
                 ],
