@@ -50,7 +50,8 @@ class _DateGroupedSamplesViewState extends State<DateGroupedSamplesView> {
       var samples = await samplesapiInstance.samplesGet(
           offset: _samples.length,
           limit: MAX_LIMIT,
-          type: widget.selectedChoice.type);
+          type: widget.selectedChoice.type,
+          source_: widget.selectedChoice.source);
 
       _samples.addAll(samples);
 
