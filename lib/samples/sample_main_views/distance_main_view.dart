@@ -46,7 +46,6 @@ class _DistanceMainViewState extends State<DistanceMainView> {
               sample.startDate >
               _now.subtract(Duration(days: 1)).millisecondsSinceEpoch)
           .map((sample) {
-        print(sample.value.runtimeType);
         return sample.value;
       }).fold(0, (value, element) => value + element),
       samples
@@ -54,7 +53,6 @@ class _DistanceMainViewState extends State<DistanceMainView> {
               sample.startDate >
               _now.subtract(Duration(days: 7)).millisecondsSinceEpoch)
           .map((sample) {
-        print(sample.value.runtimeType);
         return sample.value;
       }).fold(0, (value, element) => value + element),
       samples
@@ -62,11 +60,9 @@ class _DistanceMainViewState extends State<DistanceMainView> {
               sample.startDate >
               _now.subtract(Duration(days: 30)).millisecondsSinceEpoch)
           .map((sample) {
-        print(sample.value.runtimeType);
         return sample.value;
       }).fold(0, (value, element) => value + element),
       samples.map((sample) {
-        print(sample.value.runtimeType);
         return sample.value;
       }).reduce((value, element) => (value as num) + element),
     );
@@ -84,7 +80,7 @@ class _DistanceMainViewState extends State<DistanceMainView> {
       return sampleMap;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -92,7 +88,8 @@ class _DistanceMainViewState extends State<DistanceMainView> {
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
           final data = snapshot.data as List<Sample>;
-          final distanceState = _calcLastDistances(data);
+          final distanceState =
+              data.isNotEmpty ? _calcLastDistances(data) : DistanceState(0, 0, 0, 0);
           final distanceGroupedByDate = _distanceGroupedByDate(data);
           return ContentColumn(children: <Widget>[
             CustomTable.withColor(
@@ -159,8 +156,6 @@ class _DistanceMainViewState extends State<DistanceMainView> {
     );
   }
 }
-
-
 
 class SimpleTimeSeriesChart extends StatelessWidget {
   final List<charts.Series> seriesList;
