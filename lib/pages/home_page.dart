@@ -78,7 +78,8 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.settings), title: Text("Settings")),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Theme.of(context).primaryColorDark,
+        
         onTap: _onItemTapped,
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:dtapp_flutter/pages/sample_page.dart';
+import 'package:dtapp_flutter/util/string_format.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' hide Type;
 
@@ -17,6 +18,7 @@ class SamplesPage extends StatefulWidget {
 
 class _SamplesPageState extends State<SamplesPage> {
   // TypeChoice _selectedChoice = choices[0];
+  Map<String, List<TypeChoice>> _choicesGrouped;
 
   /*
   void _select(TypeChoice choice) {
@@ -26,9 +28,26 @@ class _SamplesPageState extends State<SamplesPage> {
   }
   */
 
+  @override
+  void initState() {
+    _choicesGrouped = _getChociesGrouped();
+    super.initState();
+  }
+
   void _actionButtonAction() async {
     print("Useless aciton button pressed yo");
-    print(choices);
+    // print(choices);
+    _getChociesGrouped();
+  }
+
+  Map<String, List<TypeChoice>> _getChociesGrouped() {
+    return choices.fold<Map<String, List<TypeChoice>>>({}, (map, currentMap) {
+      if (map[currentMap.source] == null) {
+        map[currentMap.source] = [];
+      }
+      map[currentMap.source].add(currentMap);
+      return map;
+    });
   }
 
   void _goToSamplePage(BuildContext context, TypeChoice choice) {
@@ -68,21 +87,60 @@ class _SamplesPageState extends State<SamplesPage> {
         */
           ),
           body: ListView.builder(
-              itemCount: choices.length,
-              itemBuilder: (BuildContext context, index) {
-                return Card(
-                    child: ListTile(
-                  title: Row(children: <Widget>[
-                    Icon(choices[index].iconData),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(choices[index].title),
-                  ]),
-                  trailing: Icon(Icons.keyboard_arrow_right),
-                  onTap: () => _goToSamplePage(context, choices[index]),
-                ));
-              }),
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: _choicesGrouped.keys.length,
+            itemBuilder: (BuildContext context, index) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.only(top: 5, left: 5),
+                      child: Text('${capitalize(_choicesGrouped.keys.elementAt(index))}',
+                          style: TextStyle(
+                            fontSize: 20,
+                            shadows: <Shadow>[
+                              Shadow(
+                                offset: Offset(1, 1),
+                                blurRadius: 1,
+                                color: Color.fromARGB(100, 0, 0, 0),
+                              ),
+                            ],
+                          ))),
+                  Container(
+                      padding: EdgeInsets.all(5),
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount:
+                            _choicesGrouped.values.elementAt(index).length,
+                        itemBuilder: (BuildContext context, index2) {
+                          return Card(
+                            child: ListTile(
+                              title: Row(children: <Widget>[
+                                Icon(_choicesGrouped.values
+                                    .elementAt(index)[index2]
+                                    .iconData),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(_choicesGrouped.values
+                                    .elementAt(index)[index2]
+                                    .title),
+                              ]),
+                              trailing: Icon(Icons.keyboard_arrow_right),
+                              onTap: () => _goToSamplePage(
+                                  context,
+                                  _choicesGrouped.values
+                                      .elementAt(index)[index2]),
+                            ),
+                          );
+                        },
+                      ))
+                ],
+              );
+            },
+          ),
           floatingActionButton: FloatingActionButton(
               onPressed: _actionButtonAction,
               tooltip: 'Yo',

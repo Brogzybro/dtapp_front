@@ -25,8 +25,8 @@ class SleepSampleView extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text("From: ${formatDate(DateTime.fromMillisecondsSinceEpoch(sample.startDate))}"), 
-              Text("To: ${formatDate(DateTime.fromMillisecondsSinceEpoch(sample.endDate))}")
+              Text("From: ${formatDateTimeFull(DateTime.fromMillisecondsSinceEpoch(sample.startDate))}"), 
+              Text("To: ${formatDateTimeFull(DateTime.fromMillisecondsSinceEpoch(sample.endDate))}")
             ],
           )
         ]

@@ -31,8 +31,8 @@ class ECGSampleView extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Text("Start: ${formatDate(DateTime.fromMillisecondsSinceEpoch(sample.startDate))}"), 
-                Text("End: ${formatDate(DateTime.fromMillisecondsSinceEpoch(sample.endDate))}")
+                Text("Start: ${formatDateTimeFull(DateTime.fromMillisecondsSinceEpoch(sample.startDate))}"), 
+                Text("End: ${formatDateTimeFull(DateTime.fromMillisecondsSinceEpoch(sample.endDate))}")
               ],
             )
           ]

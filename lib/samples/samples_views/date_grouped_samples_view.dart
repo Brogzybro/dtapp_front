@@ -1,3 +1,4 @@
+import 'package:dtapp_flutter/util/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:dtapp_flutter/samples/sample_view_select.dart';
 import 'package:openapi/api.dart' hide Type;
@@ -47,7 +48,9 @@ class _DateGroupedSamplesViewState extends State<DateGroupedSamplesView> {
   Future<Map<DateTime, List<Sample>>> _fetchSamplesMapped() async {
     try {
       var samples = await samplesapiInstance.samplesGet(
-          offset: _samples.length, limit: MAX_LIMIT, type: widget.selectedChoice.type);
+          offset: _samples.length,
+          limit: MAX_LIMIT,
+          type: widget.selectedChoice.type);
 
       _samples.addAll(samples);
 
@@ -99,27 +102,40 @@ class _DateGroupedSamplesViewState extends State<DateGroupedSamplesView> {
                       DateTime key = data.keys.elementAt(index);
                       List<Sample> values = data.values.elementAt(index);
                       //return Text("test");
-                      return Column(children: <Widget>[
-                        ExpansionTile(
-                          title: Text("${key.year}/${key.month}/${key.day}"),
-                          children: <Widget>[
-                            ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount: values.length,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemBuilder:
-                                    (BuildContext ibContext, int index_2) {
-                                  Sample sample = values[index_2];
-                                  final color =
-                                      Colors.blue[100 - 50 * (index_2 % 2)];
-                                  return selectSampleView(
-                                      context, sample.type, sample, color);
-                                })
-                          ],
-                          initiallyExpanded: true,
-                        )
-                      ]);
+                      return Container(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: Column(children: <Widget>[
+                            ExpansionTile(
+                              title: Text(formatDateFull(key)),
+                              children: <Widget>[
+                                ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: values.length,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder:
+                                        (BuildContext ibContext, int index_2) {
+                                      Sample sample = values[index_2];
+                                      final color = Colors.white;
+                                      // Colors.blue[100 - 50 * (index_2 % 2)];
+                                      return Column(children: [
+                                        selectSampleView(context, sample.type,
+                                            sample, color),
+                                        if (index_2 < values.length - 1)
+                                          Container(
+                                              decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey[300],
+                                                  width: 2.0),
+                                            ),
+                                          )),
+                                      ]);
+                                    })
+                              ],
+                              initiallyExpanded: true,
+                            )
+                          ]));
                     }));
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");

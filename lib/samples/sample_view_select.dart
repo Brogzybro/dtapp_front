@@ -7,6 +7,8 @@ import 'sample_views/generic_sample_view.dart';
 import 'sample_views/sleep_sample_view.dart';
 
 Widget selectSampleView(BuildContext context, OA.Type type, Sample sample, Color color) {
+  return GenericSampleView(context, sample, color);
+  /*
   switch (type) {
     case OA.Type.sleep_:
       return SleepSampleView(sample, color);
@@ -17,4 +19,5 @@ Widget selectSampleView(BuildContext context, OA.Type type, Sample sample, Color
     default:
       return GenericSampleView(context, sample, color);
   }
+  */
 }
