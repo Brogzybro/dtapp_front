@@ -18,16 +18,7 @@ class SamplesPage extends StatefulWidget {
 }
 
 class _SamplesPageState extends State<SamplesPage> {
-  // TypeChoice _selectedChoice = choices[0];
   Map<String, List<TypeChoice>> _choicesGrouped;
-
-  /*
-  void _select(TypeChoice choice) {
-    setState(() {
-      _selectedChoice = choice;
-    });
-  }
-  */
 
   @override
   void initState() {
@@ -52,27 +43,6 @@ class _SamplesPageState extends State<SamplesPage> {
           appBar: AppBar(
             title: Text("Devices"),
             actions: <Widget>[],
-            /*
-                bottom: TabBar(
-                    isScrollable: true,
-                    tabs: <Widget>[Text("test"), Text("test2")],
-                  ),
-                  */
-            /*
-        actions: <Widget>[
-          Center(child: Text(_selectedChoice.title)),
-          PopupMenuButton(
-            onSelected: _select,
-            itemBuilder: (BuildContext context) {
-              return choices.map((TypeChoice choice) {
-                return PopupMenuItem<TypeChoice>(
-                    value: choice, child: Text(choice.title));
-              }).toList();
-            },
-            icon: Icon(Icons.filter_list),
-          ),
-        ],
-        */
           ),
           body: SamplesMenuDevices(),
         );
@@ -217,79 +187,6 @@ class TestTestTest extends StatelessWidget {
     );
   }
 }
-
-/*
-                    ListTile(
-                      title: Text(
-                          capitalize(devicesGrouped.keys.elementAt(index)) +
-                              " devices"),
-                      subtitle: Text(devicesGrouped.values
-                          .elementAt(index)
-                          .fold(
-                              "\n",
-                              (str, dev2) => str += dev2.model +
-                                  '\n  - Type: ' +
-                                  dev2.type +
-                                  '\n  - Battery: ' +
-                                  dev2.battery +
-                                  '\n')),
-                      trailing: Icon(Icons.keyboard_arrow_right),
-                      onTap: () => goToSamplesForDevicePage(
-                          context,
-                          choices
-                              .where((choice) =>
-                                  choice.source ==
-                                  devicesGrouped.keys.elementAt(index))
-                              .toList()),
-                    ),
-*/
-/*
-                  Container(
-                      padding: EdgeInsets.only(top: 5, left: 5),
-                      child: Text(
-                          '${capitalize(devicesGrouped.keys.elementAt(index))}',
-                          style: TextStyle(
-                            fontSize: 20,
-                            shadows: <Shadow>[
-                              Shadow(
-                                offset: Offset(1, 1),
-                                blurRadius: 1,
-                                color: Color.fromARGB(100, 0, 0, 0),
-                              ),
-                            ],
-                          ))),
-                  Container(
-                      padding: EdgeInsets.all(5),
-                      child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount:
-                            devicesGrouped.values.elementAt(index).length,
-                        itemBuilder: (BuildContext context, index2) {
-                          return Card(
-                            child: ListTile(isThreeLine: true,
-                              title: Text(devicesGrouped.values
-                                    .elementAt(index)[index2]
-                                    .model),
-                              subtitle: Text("yooo yo\nyoyoyo\nyoyoyyo\nyoyoyoyo"),
-                              /*
-                              Row(children: <Widget>[
-                                Text(devicesGrouped.values
-                                    .elementAt(index)[index2]
-                                    .model),
-                                Text("test123")
-                              ]),
-                              */
-                              trailing: Icon(Icons.keyboard_arrow_right),
-                              /*
-                        onTap: () => goToSamplePage(context,
-                            _choicesGrouped.values.elementAt(index)[index2]),
-                            */
-                            ),
-                          );
-                        },
-                      ))
-*/
 
 class SamplesMenu extends StatelessWidget {
   SamplesMenu(this._choicesGrouped);
