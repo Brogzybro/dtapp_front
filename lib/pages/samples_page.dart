@@ -35,15 +35,6 @@ class _SamplesPageState extends State<SamplesPage> {
     super.initState();
   }
 
-  void _actionButtonAction() async {
-    print("Useless aciton button pressed yo");
-    final devices = await devicesapiInstance.devicesGet();
-    print(devices.reduce((dev, dev2) => dev..model += ", " + dev2.model).model);
-    print(getDevicesGrouped(devices));
-    // print(choices);
-    // _getChociesGrouped();
-  }
-
   Map<String, List<TypeChoice>> _getChociesGrouped() {
     return choices.fold<Map<String, List<TypeChoice>>>({}, (map, currentMap) {
       if (map[currentMap.source] == null) {
@@ -84,10 +75,6 @@ class _SamplesPageState extends State<SamplesPage> {
         */
           ),
           body: SamplesMenuDevices(),
-          floatingActionButton: FloatingActionButton(
-              onPressed: _actionButtonAction,
-              tooltip: 'Yo',
-              child: Icon(Icons.add)),
         );
       });
     });
@@ -126,32 +113,137 @@ class SamplesMenuDevices extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
 
           final devicesGrouped = snapshot.data as Map<String, List<Device>>;
-          return ListView.builder(
+          return Container(
+              child: ListView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: devicesGrouped.keys.length,
             itemBuilder: (BuildContext context, index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Card(
-                      child: ListTile(
-                    title: Text(
-                        capitalize(devicesGrouped.keys.elementAt(index)) +
-                            " devices"),
-                    subtitle: Text(devicesGrouped.values
-                        .elementAt(index)
-                        .fold("\n", (str, dev2) => str += dev2.model + '\n  - Type: ' + dev2.type + '\n  - Battery: ' + dev2.battery + '\n')),
-                    trailing: Icon(Icons.keyboard_arrow_right),
-                    onTap: () => goToSamplesForDevicePage(
-                        context,
-                        choices
-                            .where((choice) =>
-                                choice.source ==
-                                devicesGrouped.keys.elementAt(index))
-                            .toList()),
-                  ))
-                  /*
+              return GestureDetector(
+                child: DevicesCard(
+                  devicesGrouped.keys.elementAt(index),
+                  devicesGrouped.values.elementAt(index),
+                ),
+                onTap: () => {
+                  goToSamplesForDevicePage(
+                      context,
+                      choices
+                          .where((choice) =>
+                              choice.source ==
+                              devicesGrouped.keys.elementAt(index))
+                          .toList())
+                },
+              );
+            },
+          ));
+        });
+  }
+}
+
+class DevicesCard extends StatelessWidget {
+  DevicesCard(this.title, this.devices);
+  final String title;
+  final List<Device> devices;
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(capitalize(title), style: TextStyle(fontSize: 18)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          ...(devices.map((device) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(device.model),
+                                    Text(device.type,
+                                        style: TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.grey[600]))
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Icon(Icons.battery_charging_full,
+                                        color: (device.battery == "high")
+                                            ? Colors.green
+                                            : Colors.yellow[700]),
+                                    Text(device.battery)
+                                  ],
+                                )
+                              ],
+                            );
+                          }).toList())
+                        ],
+                      )),
+                ),
+                Icon(Icons.keyboard_arrow_right)
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TestTestTest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[Text("model"), Text("type")],
+        ),
+        Text("battery")
+      ],
+    );
+  }
+}
+
+/*
+                    ListTile(
+                      title: Text(
+                          capitalize(devicesGrouped.keys.elementAt(index)) +
+                              " devices"),
+                      subtitle: Text(devicesGrouped.values
+                          .elementAt(index)
+                          .fold(
+                              "\n",
+                              (str, dev2) => str += dev2.model +
+                                  '\n  - Type: ' +
+                                  dev2.type +
+                                  '\n  - Battery: ' +
+                                  dev2.battery +
+                                  '\n')),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                      onTap: () => goToSamplesForDevicePage(
+                          context,
+                          choices
+                              .where((choice) =>
+                                  choice.source ==
+                                  devicesGrouped.keys.elementAt(index))
+                              .toList()),
+                    ),
+*/
+/*
                   Container(
                       padding: EdgeInsets.only(top: 5, left: 5),
                       child: Text(
@@ -197,14 +289,7 @@ class SamplesMenuDevices extends StatelessWidget {
                           );
                         },
                       ))
-                      */
-                ],
-              );
-            },
-          );
-        });
-  }
-}
+*/
 
 class SamplesMenu extends StatelessWidget {
   SamplesMenu(this._choicesGrouped);
