@@ -88,6 +88,9 @@ class SamplesMenuDevices extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
 
           final devicesGrouped = snapshot.data as Map<String, List<Device>>;
+          if(devicesGrouped.isEmpty) return Center(child: Text("No devices found"),);
+
+          print(devicesGrouped);
           return Container(
               child: ListView.builder(
             scrollDirection: Axis.vertical,
