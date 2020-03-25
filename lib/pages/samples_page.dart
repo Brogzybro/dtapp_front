@@ -9,9 +9,10 @@ final samplesapiInstance = SamplesApi();
 final devicesapiInstance = DevicesApi();
 
 class SamplesPage extends StatefulWidget {
-  SamplesPage({Key key, this.title}) : super(key: key);
+  SamplesPage({Key key, this.title, this.otherUser}) : super(key: key);
 
   final String title;
+  final String otherUser;
 
   @override
   _SamplesPageState createState() => _SamplesPageState();
@@ -37,17 +38,15 @@ class _SamplesPageState extends State<SamplesPage> {
   }
 
   Widget build(BuildContext context) {
-    return Navigator(onGenerateRoute: (RouteSettings settings) {
-      return MaterialPageRoute(builder: (BuildContext context) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("Devices"),
-            actions: <Widget>[],
-          ),
-          body: SamplesMenuDevices(),
-        );
-      });
-    });
+    return Scaffold(
+      appBar: AppBar(
+        title: Text((this.widget.otherUser == null)
+            ? "Devices"
+            : this.widget.otherUser + "'s devices"),
+        actions: <Widget>[],
+      ),
+      body: SamplesMenuDevices(otherUser: this.widget.otherUser),
+    );
   }
 }
 
@@ -61,23 +60,29 @@ Map<String, List<Device>> getDevicesGrouped(List<Device> devices) {
   });
 }
 
-Future<Map<String, List<Device>>> getDevicesGroupedFuture() async {
-  return getDevicesGrouped(await devicesapiInstance.devicesGet());
+Future<Map<String, List<Device>>> getDevicesGroupedFuture(
+    String otherUser) async {
+  return getDevicesGrouped(
+      await devicesapiInstance.devicesGet(otherUser: otherUser));
 }
 
-void goToSamplesForDevicePage(BuildContext context, List<TypeChoice> choices) {
+void goToSamplesForDevicePage(
+    BuildContext context, List<TypeChoice> choices, String otherUser) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => SamplesForDevicePage(choices)),
+    MaterialPageRoute(
+        builder: (context) =>
+            SamplesForDevicePage(choices, otherUser: otherUser)),
   );
 }
 
 class SamplesMenuDevices extends StatelessWidget {
-  SamplesMenuDevices();
+  SamplesMenuDevices({this.otherUser});
+  final String otherUser;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getDevicesGroupedFuture(),
+        future: getDevicesGroupedFuture(otherUser),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData != true)
             return Center(child: CircularProgressIndicator());
@@ -101,7 +106,8 @@ class SamplesMenuDevices extends StatelessWidget {
                           .where((choice) =>
                               choice.source ==
                               devicesGrouped.keys.elementAt(index))
-                          .toList())
+                          .toList(),
+                      otherUser)
                 },
               );
             },
@@ -189,8 +195,9 @@ class TestTestTest extends StatelessWidget {
 }
 
 class SamplesMenu extends StatelessWidget {
-  SamplesMenu(this._choicesGrouped);
+  SamplesMenu(this._choicesGrouped, {this.otherUser});
   final Map<String, List<TypeChoice>> _choicesGrouped;
+  final String otherUser;
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -236,8 +243,10 @@ class SamplesMenu extends StatelessWidget {
                               .title),
                         ]),
                         trailing: Icon(Icons.keyboard_arrow_right),
-                        onTap: () => goToSamplePage(context,
-                            _choicesGrouped.values.elementAt(index)[index2]),
+                        onTap: () => goToSamplePage(
+                            context,
+                            _choicesGrouped.values.elementAt(index)[index2],
+                            otherUser),
                       ),
                     );
                   },

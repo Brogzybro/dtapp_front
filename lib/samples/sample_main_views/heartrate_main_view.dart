@@ -7,6 +7,8 @@ import 'package:charts_flutter/flutter.dart' as charts;
 SamplesApi samplesApi = SamplesApi();
 
 class HeartRateMainView extends StatefulWidget {
+  HeartRateMainView(this.otherUser);
+  final String otherUser;
   @override
   _HeartRateMainViewState createState() => _HeartRateMainViewState();
 }
@@ -19,7 +21,8 @@ class _HeartRateMainViewState extends State<HeartRateMainView> {
     return await samplesApi.samplesGet(
         type: OA.Type.heartRate_,
         startDate: _date.millisecondsSinceEpoch,
-        endDate: _date.add(Duration(days: 1)).millisecondsSinceEpoch);
+        endDate: _date.add(Duration(days: 1)).millisecondsSinceEpoch,
+        otherUser: this.widget.otherUser);
   }
 
   _showDP(BuildContext context) async {
@@ -35,7 +38,7 @@ class _HeartRateMainViewState extends State<HeartRateMainView> {
         );
       },
     );
-    if(selectedDate == null) return;
+    if (selectedDate == null) return;
     setState(() {
       _date = selectedDate;
     });
@@ -61,7 +64,8 @@ class _HeartRateMainViewState extends State<HeartRateMainView> {
         FutureBuilder(
           future: _getSamples(),
           builder: (BuildContext context, snapshot) {
-            if (snapshot.hasData && snapshot.connectionState != ConnectionState.waiting) {
+            if (snapshot.hasData &&
+                snapshot.connectionState != ConnectionState.waiting) {
               final samples = snapshot.data as List<Sample>;
 
               final dataAveragedOnHour = samples
@@ -87,7 +91,8 @@ class _HeartRateMainViewState extends State<HeartRateMainView> {
                   .toList();
 
               print("# of samples: " + samples.length.toString());
-              return Expanded(child:ContentColumn(
+              return Expanded(
+                  child: ContentColumn(
                 children: <Widget>[
                   SizedBox(
                     height: 300,

@@ -10,6 +10,6 @@ import 'package:openapi/api.dart' as OA;
 void main() {
   testWidgets('MyWidget has a title and message', (WidgetTester tester) async {
     // Create the widget by telling the tester to build it.
-    await tester.pumpWidget(DistanceMainView());
+    await tester.pumpWidget(DistanceMainView("test123"));
   });
 }

@@ -8,8 +8,9 @@ import '../samples_type_choices.dart';
 final samplesapiInstance = SamplesApi();
 
 class DateGroupedSamplesView extends StatefulWidget {
-  DateGroupedSamplesView(this.selectedChoice, {Key key}) : super(key: key);
+  DateGroupedSamplesView(this.selectedChoice, this.otherUser, {Key key}) : super(key: key);
   final TypeChoice selectedChoice;
+  final String otherUser;
 
   @override
   _DateGroupedSamplesViewState createState() => _DateGroupedSamplesViewState();
@@ -51,7 +52,8 @@ class _DateGroupedSamplesViewState extends State<DateGroupedSamplesView> {
           offset: _samples.length,
           limit: MAX_LIMIT,
           type: widget.selectedChoice.type,
-          source_: widget.selectedChoice.source);
+          source_: widget.selectedChoice.source,
+          otherUser: this.widget.otherUser);
 
       _samples.addAll(samples);
 

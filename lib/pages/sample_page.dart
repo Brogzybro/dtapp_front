@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:openapi/api.dart' as OA show Type;
 
 class SamplePage extends StatefulWidget {
-  SamplePage(this.choice);
+  SamplePage(this.choice, {this.otherUser});
   @override
   _SamplePageState createState() => _SamplePageState();
   final TypeChoice choice;
+  final String otherUser;
 }
 
 class _SamplePageState extends State<SamplePage> {
@@ -26,7 +27,7 @@ class _SamplePageState extends State<SamplePage> {
     ];
     _tabChoices = [
       if (sampleMainView != null) sampleMainView,
-      DateGroupedSamplesView(widget.choice),
+      DateGroupedSamplesView(widget.choice, this.widget.otherUser),
     ];
     super.initState();
   }
@@ -34,12 +35,12 @@ class _SamplePageState extends State<SamplePage> {
   Widget _sampleMainViewFactory(TypeChoice choice) {
     switch (choice.type) {
       case OA.Type.distance_:
-        return DistanceMainView();
+        return DistanceMainView(this.widget.otherUser);
         break;
       case OA.Type.heartRate_:
-        return HeartRateMainView();
+        return HeartRateMainView(this.widget.otherUser);
       case OA.Type.ecg_:
-        return ECGMainView();
+        return ECGMainView(this.widget.otherUser);
       default:
         return null;
     }

@@ -3,16 +3,17 @@ import 'package:dtapp_flutter/samples/samples_type_choices.dart';
 import 'package:dtapp_flutter/util/string_format.dart';
 import 'package:flutter/material.dart';
 
-void goToSamplePage(BuildContext context, TypeChoice choice) {
+void goToSamplePage(BuildContext context, TypeChoice choice, String otherUser) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => SamplePage(choice)),
+    MaterialPageRoute(builder: (context) => SamplePage(choice, otherUser: otherUser,)),
   );
 }
 
 class SamplesForDevicePage extends StatelessWidget {
-  SamplesForDevicePage(this.choices);
+  SamplesForDevicePage(this.choices, {this.otherUser});
   final List<TypeChoice> choices;
+  final String otherUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +35,7 @@ class SamplesForDevicePage extends StatelessWidget {
                   Text(choices[index].title),
                 ]),
                 trailing: Icon(Icons.keyboard_arrow_right),
-                onTap: () => goToSamplePage(context, choices[index]),
+                onTap: () => goToSamplePage(context, choices[index], otherUser),
               ),
             );
           },

@@ -1,5 +1,6 @@
 import 'package:dtapp_flutter/pages/samples_page.dart';
 import 'package:dtapp_flutter/pages/settings_page.dart';
+import 'package:dtapp_flutter/pages/shared_page.dart';
 import 'package:flutter/material.dart';
 
 final List<String> entries = <String>['A', 'B', 'C'];
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   // static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
     SamplesPage(),
+    SharedPage(),
     SettingsPage(),
   ];
 
@@ -74,6 +76,8 @@ class _HomePageState extends State<HomePage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
               icon: Icon(Icons.art_track), title: Text("Devices")),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.folder_shared), title: Text("Shared")),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), title: Text("Settings")),
         ],

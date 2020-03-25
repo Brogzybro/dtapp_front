@@ -7,6 +7,8 @@ import 'package:charts_flutter/flutter.dart' as charts;
 SamplesApi samplesApi = SamplesApi();
 
 class DistanceMainView extends StatefulWidget {
+  DistanceMainView(this.otherUser);
+  final String otherUser;
   @override
   _DistanceMainViewState createState() => _DistanceMainViewState();
 }
@@ -36,7 +38,7 @@ class _DistanceMainViewState extends State<DistanceMainView> {
         _now.subtract(Duration(days: 90)).millisecondsSinceEpoch;
 
     return await samplesApi.samplesGet(
-        startDate: ninetyDaysAgo, type: DISTANCE_TYPE);
+        startDate: ninetyDaysAgo, type: DISTANCE_TYPE, otherUser: this.widget.otherUser);
   }
 
   DistanceState _calcLastDistances(List<Sample> samples) {

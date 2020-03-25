@@ -8,6 +8,8 @@ import 'package:charts_flutter/flutter.dart' as charts;
 SamplesApi samplesApi = SamplesApi();
 
 class ECGMainView extends StatefulWidget {
+  ECGMainView(this.otherUser);
+  final String otherUser;
   @override
   _ECGMainViewState createState() => _ECGMainViewState();
 }
@@ -49,6 +51,7 @@ class _ECGMainViewState extends State<ECGMainView> {
       type: OA.Type.ecg_,
       limit: 1,
       offset: _nav.offset,
+      otherUser: this.widget.otherUser
     );
     return (samples.isNotEmpty)
         ? SampleOffset(samples.first, _nav.offset)
