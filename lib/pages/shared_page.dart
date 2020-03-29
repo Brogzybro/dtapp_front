@@ -18,7 +18,7 @@ class Model {
 Future<String> shareWithUser(username, context) async {
   try {
     final response =
-        await sharingAPI.sharedUsersShareWithGet(otherUser: username);
+        await sharingAPI.sharedUsersPost(InlineObject()..otherUser = username);
     return response.message;
   } on ApiException catch (e) {
     return jsonDecode(e.message)["error"];
