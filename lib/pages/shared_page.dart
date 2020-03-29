@@ -146,10 +146,16 @@ class _SharedPageState extends State<SharedPage> {
               ]),
               SharedSection(
                   title: "Users shared with",
-                  action: FlatButton(
-                    child: Text("Remove all"),
-                    onPressed: _removeAllShares,
-                  ),
+                  action: Container(
+                      height: 25,
+                      margin: EdgeInsets.only(right:10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          color: Colors.red[300]),
+                      child: FlatButton(
+                        child: Text("Remove all", style: TextStyle(color: Colors.white)),
+                        onPressed: _removeAllShares,
+                      )),
                   children: <Widget>[
                     FutureBuilder(
                       future: _getUsersSharedWith(),
