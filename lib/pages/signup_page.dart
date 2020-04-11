@@ -73,14 +73,12 @@ class _SignupPageState extends State<SignupPage> {
 
                         if (_formKey.currentState.validate()) {
                           _formKey.currentState.save();
-                          attemptSignup(_model).then((success) {
-                            var text = (success)
-                                ? "User created!"
-                                : "User creation failed. Username probably taken.";
+                          attemptSignup(_model).then((text) {
+                            //     : "User creation failed. Username probably taken.";
                             print(text);
                             Scaffold.of(context).hideCurrentSnackBar();
                             Scaffold.of(context)
-                                .showSnackBar(SnackBar(content: Text(text)));
+                                .showSnackBar(SnackBar(content: Text("User creation failed. " + text)));
                           });
                         }
                         print("yo");
@@ -112,7 +110,7 @@ class _SignupPageState extends State<SignupPage> {
   }
 }
 
-Future<bool> attemptSignup(Model model) async {
+Future<String> attemptSignup(Model model) async {
   print("Signing up...");
   var user = new User();
   user.username = model.username;
@@ -121,9 +119,23 @@ Future<bool> attemptSignup(Model model) async {
     var postReq = await userapiInstance.userPost(user);
     print("User created");
     print(postReq);
-    return true;
+    return "User created!";
+  } on ApiException catch (e) {
+    print(e);
+    print(e.code);
+    print('ayyy');
+    switch (e.code) {
+      case 422:
+        return "Username already taken.";
+        break;
+      case 400:
+        return "Make sure password is 8 characters or more";
+        break;
+      default:
+        return "";
+    }
   } catch (e) {
     print(e);
-    return false;
+    return e.toString();
   }
 }
