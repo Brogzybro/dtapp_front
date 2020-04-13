@@ -78,7 +78,7 @@ class _SignupPageState extends State<SignupPage> {
                             print(text);
                             Scaffold.of(context).hideCurrentSnackBar();
                             Scaffold.of(context)
-                                .showSnackBar(SnackBar(content: Text("User creation failed. " + text)));
+                                .showSnackBar(SnackBar(content: Text(text)));
                           });
                         }
                         print("yo");
@@ -124,16 +124,18 @@ Future<String> attemptSignup(Model model) async {
     print(e);
     print(e.code);
     print('ayyy');
+    String text = "User creation failed. ";
     switch (e.code) {
       case 422:
-        return "Username already taken.";
+        text += "Username already taken.";
         break;
       case 400:
-        return "Make sure password is 8 characters or more";
+        text += "Make sure password is 8 characters or more";
         break;
       default:
-        return "";
+        break;
     }
+    return text;
   } catch (e) {
     print(e);
     return e.toString();
