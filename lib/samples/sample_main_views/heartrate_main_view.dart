@@ -92,7 +92,7 @@ class _HeartRateMainViewState extends State<HeartRateMainView> {
 
               print("# of samples: " + samples.length.toString());
               return Expanded(
-                  child: ContentColumn(
+                  child: Column(
                 children: <Widget>[
                   SizedBox(
                     height: 300,
@@ -142,12 +142,12 @@ class SimpleTimeSeriesChart extends StatelessWidget {
     return new charts.TimeSeriesChart(
       seriesList,
       animate: animate,
-
+      behaviors: [new charts.PanAndZoomBehavior()],
       // Optionally pass in a [DateTimeFactory] used by the chart. The factory
       // should create the same type of [DateTime] as the data provided. If none
       // specified, the default creates local date time.
       dateTimeFactory: const charts.LocalDateTimeFactory(),
-      domainAxis: new charts.DateTimeAxisSpec(
+      domainAxis: new DateTimeAxisSpecWorkaround(
           tickFormatterSpec: new charts.AutoDateTimeTickFormatterSpec(
         hour: charts.TimeFormatterSpec(format: 'Hm', transitionFormat: 'Hm'),
       )),
@@ -175,6 +175,29 @@ class SimpleTimeSeriesChart extends StatelessWidget {
         data: data,
       )
     ];
+  }
+}
+
+// This workaround allows pan and zoom when using DateTimeAxisSpec
+// More info: https://github.com/google/charts/issues/287#issuecomment-521999694
+class DateTimeAxisSpecWorkaround extends charts.DateTimeAxisSpec {
+
+  const DateTimeAxisSpecWorkaround ({
+    charts.RenderSpec<DateTime> renderSpec,
+    charts.DateTimeTickProviderSpec tickProviderSpec,
+    charts.DateTimeTickFormatterSpec tickFormatterSpec,
+    bool showAxisLine,
+  }) : super(
+            renderSpec: renderSpec,
+            tickProviderSpec: tickProviderSpec,
+            tickFormatterSpec: tickFormatterSpec,
+            showAxisLine: showAxisLine);
+
+  @override
+  configure(charts.Axis<DateTime> axis, charts.ChartContext context,
+      charts.GraphicsFactory graphicsFactory) {
+    super.configure(axis, context, graphicsFactory);
+    axis.autoViewport = false;
   }
 }
 
