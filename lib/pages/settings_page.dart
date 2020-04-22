@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'login_page.dart';
 
+UserApi userApi = UserApi();
 FitbitApi fitbitApi = FitbitApi();
 SamplesApi samplesApi = SamplesApi();
 WithingsApi withingsApi = WithingsApi();
@@ -22,7 +23,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   void _connectWithings() async {
-    final idk = await fitbitApi.userTokenPost();
+    final idk = await userApi.userTokenPost();
     print(idk.token);
 
     final url =
@@ -44,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _connectFitbit() async {
-    final idk = await fitbitApi.userTokenPost();
+    final idk = await userApi.userTokenPost();
     print(idk.token);
 
     final url =
