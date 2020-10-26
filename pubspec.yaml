@@ -26,6 +26,7 @@ dependencies:
   rxdart:
   charts_flutter: ^0.8.1
   flutter_dotenv: ^2.1.0
+  age: ^0.0.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
