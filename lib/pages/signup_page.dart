@@ -45,6 +45,7 @@ class _SignupPageState extends State<SignupPage> {
 
         print("Using only DateTime: You are $age1 years old");
         print("Using age package: You are ${age2.years} years old");
+        print("picked: ${picked.millisecondsSinceEpoch}");
       });
   }
 
@@ -151,6 +152,7 @@ Future<String> attemptSignup(Model model) async {
   var user = new User();
   user.username = model.username;
   user.password = model.password;
+  user.birthDate = model.birthdate.millisecondsSinceEpoch;
   try {
     var postReq = await userapiInstance.userPost(user);
     print("User created");
