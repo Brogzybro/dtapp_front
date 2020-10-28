@@ -22,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class Model {
   String username;
   String password;
+  DateTime birthdate;
 }
 
 class _LoginPageState extends State<LoginPage> {

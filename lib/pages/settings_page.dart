@@ -13,8 +13,7 @@ UserApi userApi = UserApi();
 FitbitApi fitbitApi = FitbitApi();
 SamplesApi samplesApi = SamplesApi();
 WithingsApi withingsApi = WithingsApi();
-
-
+PredictionApi predictionApi = PredictionApi();
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -59,6 +58,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<bool> _checkFitbitConnection() async {
     try {
+      var p = await predictionApi.predictionGet();
+      print("----");
+      print(p);
+      print(p.risk);
+      print("--__--");
       return await fitbitApi.fitbitIsauthorizedGet();
     } catch (e) {
       print(e);

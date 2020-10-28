@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openapi/api.dart';
+import 'package:age/age.dart';
 
 import 'login_page.dart';
 
@@ -18,9 +19,34 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   Model _model = new Model();
+  DateTime today = DateTime.now();
+  DateTime selectedDate = DateTime.now();
 
   void _actionButtonAction() {
     print("Useless aciton button pressed");
+  }
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: today,
+        firstDate: DateTime(1900, 1),
+        lastDate: today);
+    if (picked != null && picked != today)
+      setState(() {
+        _model.birthdate = picked;
+        selectedDate = picked;
+
+        // Local age variables for testing
+        int age1 = (today.difference(selectedDate).inDays / 365.25).floor();
+
+        AgeDuration age2 =
+            Age.dateDifference(fromDate: selectedDate, toDate: today);
+
+        print("Using only DateTime: You are $age1 years old");
+        print("Using age package: You are ${age2.years} years old");
+        print("picked: ${picked.millisecondsSinceEpoch}");
+      });
   }
 
   @override
@@ -51,6 +77,17 @@ class _SignupPageState extends State<SignupPage> {
                       return null;
                     },
                     onSaved: (val) => _model.username = val,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: Text("${selectedDate.toLocal()}".split(' ')[0]),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  RaisedButton(
+                    onPressed: () => _selectDate(context),
+                    child: Text('Select your birthday'),
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
@@ -115,6 +152,7 @@ Future<String> attemptSignup(Model model) async {
   var user = new User();
   user.username = model.username;
   user.password = model.password;
+  user.birthDate = model.birthdate.millisecondsSinceEpoch;
   try {
     var postReq = await userapiInstance.userPost(user);
     print("User created");
