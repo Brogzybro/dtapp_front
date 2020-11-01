@@ -78,17 +78,6 @@ class _SignupPageState extends State<SignupPage> {
                     },
                     onSaved: (val) => _model.username = val,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: Text("${selectedDate.toLocal()}".split(' ')[0]),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  RaisedButton(
-                    onPressed: () => _selectDate(context),
-                    child: Text('Select your birthday'),
-                  ),
                   TextFormField(
                     decoration: const InputDecoration(
                       hintText: 'Enter your password',
@@ -102,6 +91,27 @@ class _SignupPageState extends State<SignupPage> {
                     onSaved: (val) => _model.password = val,
                     obscureText: true,
                   ),
+                  Padding(padding: const EdgeInsets.fromLTRB(0, 10, 0, 0)),
+                  SizedBox(
+                    height: 50.0,
+                    child: new Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                          child: Text(
+                            "${selectedDate.toLocal()}".split(' ')[0],
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ),
+                        Spacer(),
+                        RaisedButton(
+                          onPressed: () => _selectDate(context),
+                          child: Text('Select your birthday'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(padding: const EdgeInsets.fromLTRB(0, 10, 0, 0)),
                   RaisedButton(
                       onPressed: () {
                         Scaffold.of(context).showSnackBar(SnackBar(
