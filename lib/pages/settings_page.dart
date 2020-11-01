@@ -72,11 +72,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<bool> _checkFitbitConnection() async {
     try {
-      var p = await predictionApi.predictionGet();
-      print("----");
-      print(p);
-      print(p.risk);
-      print("--__--");
       return await fitbitApi.fitbitIsauthorizedGet();
     } catch (e) {
       print(e);
