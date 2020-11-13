@@ -56,20 +56,6 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Future<String> _getHyperTensionRisk() async {
-    String r = "No data";
-    try {
-      var p = await predictionApi.predictionGet();
-      if (p.risk != -1) {
-        double result = p.risk;
-        r = result.toStringAsFixed(4);
-      }
-    } catch (e) {
-      print(e);
-    }
-    return r;
-  }
-
   Future<bool> _checkFitbitConnection() async {
     try {
       return await fitbitApi.fitbitIsauthorizedGet();
@@ -110,9 +96,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   SettingsItem(
                       leftItem: Text("Username"),
                       rightItem: Text(loggedInUser.username)),
-                  SettingsItem(
-                      leftItem: Text("Hypertension risk"),
-                      rightItem: PredictionItem(future: _getHyperTensionRisk)),
                 ],
               ),
               SettingsSection(
@@ -216,26 +199,5 @@ class SettingsItem extends StatelessWidget {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[leftItem, rightItem]))));
-  }
-}
-
-class PredictionItem extends StatefulWidget {
-  PredictionItem({@required this.future});
-  final Future Function() future;
-  @override
-  _PredictionItemState createState() => _PredictionItemState();
-}
-
-class _PredictionItemState extends State<PredictionItem> {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: widget.future(),
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData) {
-            return Text("${snapshot.data}");
-          }
-          return CircularProgressIndicator();
-        });
   }
 }

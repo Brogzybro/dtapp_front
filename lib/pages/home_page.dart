@@ -1,9 +1,10 @@
+import 'package:dtapp_flutter/pages/analytics_page.dart';
 import 'package:dtapp_flutter/pages/samples_page.dart';
 import 'package:dtapp_flutter/pages/settings_page.dart';
 import 'package:dtapp_flutter/pages/shared_page.dart';
 import 'package:flutter/material.dart';
 
-final List<String> entries = <String>['A', 'B', 'C'];
+final List<String> entries = <String>['A', 'B', 'C', 'D'];
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   // static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
+    AnalyticsPage(),
     SamplesPage(),
     SharedPage(),
     SettingsPage(),
@@ -75,6 +77,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
+              icon: Icon(Icons.analytics_rounded), title: Text("Analytics")),
+          BottomNavigationBarItem(
               icon: Icon(Icons.art_track), title: Text("Devices")),
           BottomNavigationBarItem(
               icon: Icon(Icons.folder_shared), title: Text("Shared")),
@@ -83,8 +87,8 @@ class _HomePageState extends State<HomePage> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Theme.of(context).primaryColorDark,
-        
         onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
